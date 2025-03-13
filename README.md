@@ -56,6 +56,12 @@ ctx := context.WithValue(context.Background(), "request_id", "12345")
 logger.InfoCtx(ctx, "Processing request")
 ```
 
+### **Logging to Stderr (Testing)**
+```go
+logger := zlogger.NewStdErr()
+logger.Info("This message logs to stderr")
+```
+
 ---
 
 ## 🔔 How Sentry Works with ZLogger
@@ -151,6 +157,7 @@ This project is licensed under the MIT License.
 We welcome contributions! Feel free to submit issues and pull requests to improve ZLogger.
 
 ---
+
 
 ## Author
 

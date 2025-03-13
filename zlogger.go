@@ -58,6 +58,11 @@ func New(filename string, maxSize, maxBackups int, enableColors bool) *ZLogger {
 	return z
 }
 
+// NewStdErr creates a zerolog instance that logs to stderr (for testing purposes)
+func NewStdErr() *ZLogger {
+	return New("", 0, 0, true) // Logs to stderr with default settings
+}
+
 // NewWithSentry creates a zerolog instance with Sentry integration
 func NewWithSentry(filename string, maxSize, maxBackups int, enableColors bool, dsn, release, environment string) *ZLogger {
 	logger, outFile := newLogger(filename, maxSize, maxBackups, enableColors)

@@ -19,7 +19,7 @@ ZLogger is a structured logging library for Go, built on top of [zerolog](https:
 ## 📦 Installation
 ```sh
 # Install ZLogger using go modules
- go get github.com/your-repo/zlogger
+ go get github.com/pablolagos/zlogger
 ```
 
 ---
@@ -31,7 +31,7 @@ ZLogger is a structured logging library for Go, built on top of [zerolog](https:
 package main
 
 import (
-	"github.com/your-repo/zlogger"
+	"github.com/pablolagos/zlogger"
 )
 
 func main() {

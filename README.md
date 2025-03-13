@@ -1,103 +1,156 @@
-# ZLogger
+# ZLogger - Advanced Structured Logging for Go
 
-![Go Version](https://img.shields.io/badge/Go-%3E%3D1.17-blue)
-![License](https://img.shields.io/badge/License-MIT-green)
-![Build](https://github.com/pablolagos/zlogger/workflows/Go/badge.svg)
+ZLogger is a structured logging library for Go, built on top of [zerolog](https://github.com/rs/zerolog). It provides an easy-to-use API with advanced features like:
+- **Log rotation** with [lumberjack](https://github.com/natefinch/lumberjack)
+- **Sentry integration** for automatic error tracking
+- **Custom log levels with colors** for better readability
+- **Context-aware logging** for structured and contextual debugging
 
-**ZLogger** is a lightweight logging library built on top of [`zerolog`](https://github.com/rs/zerolog) with support for automatic log rotation and optional integration with Sentry.
+## 🚀 Features
+- 🔥 **High-performance structured logging** using zerolog.
+- 📁 **Automatic log rotation** to prevent log files from growing indefinitely.
+- 🛠 **Sentry integration** to capture and monitor errors seamlessly.
+- 🎨 **Customizable log level names and colors**.
+- 📡 **Context-aware logging** to enrich log data.
+- 🌍 **Lightweight and efficient** with minimal overhead.
 
-## Features
+---
 
-- **Fast and efficient** logging using `zerolog`.
-- **Automatic log rotation** with [`lumberjack`](https://github.com/natefinch/lumberjack).
-- **Customizable log levels** with colored output.
-- **Sentry integration** for error tracking.
-- **Minimal setup required**.
-
-## Installation
-
+## 📦 Installation
 ```sh
- go get github.com/pablolagos/zlogger
+# Install ZLogger using go modules
+ go get github.com/your-repo/zlogger
 ```
 
-## Usage
+---
 
-### Basic Logger
+## ⚡ Usage
 
+### **Basic Logging**
 ```go
 package main
 
 import (
-	"github.com/pablolagos/zlogger"
+	"github.com/your-repo/zlogger"
 )
 
 func main() {
-	logger := zlogger.New("app.log", 10, 3) // Log file with rotation
+	logger := zlogger.New("app.log", 10, 5, true) // 10MB max size, 5 backups, colors enabled
 	logger.Info("Application started")
-	logger.Warn("This is a warning message")
+	logger.Debug("Debugging details...")
 	logger.Error("An error occurred")
 }
 ```
 
-### Standard Error Logger
-
+### **Logging with Sentry**
 ```go
-logger := zlogger.NewStdErr()
-logger.Debug("Debugging mode enabled")
+logger := zlogger.NewWithSentry("app.log", 10, 5, true, "your_sentry_dsn", "1.0.0", "production")
+logger.Error("Critical error: Database connection failed")
 ```
 
-### Logger with Sentry Integration
-
+### **Context-aware Logging**
 ```go
-logger := zlogger.NewWithSentry("app.log", 10, 3, "your_sentry_dsn", "v1.0.0", "production")
-logger.Error("This error will be reported to Sentry")
+import "context"
+
+ctx := context.WithValue(context.Background(), "request_id", "12345")
+logger.InfoCtx(ctx, "Processing request")
 ```
 
-## API Reference
+---
 
-### `New(filename string, maxSize int, maxBackups int) *ZLogger`
-Creates a new logger with automatic log rotation.
+## 🔔 How Sentry Works with ZLogger
+ZLogger integrates seamlessly with [Sentry](https://sentry.io/) to capture and monitor errors in your Go application. When using `NewWithSentry()`, ZLogger automatically sends logs of level `Error` and above to Sentry.
 
-- `filename`: Path to the log file. If empty, logs are written to `stderr`.
-- `maxSize`: Maximum log file size in MB before rotation.
-- `maxBackups`: Number of backup logs to retain.
+### **How it Works**
+1. ZLogger initializes a Sentry client with the provided DSN (Data Source Name).
+2. Errors, warnings, or fatal logs are captured and sent to Sentry.
+3. Sentry records logs with stack traces and metadata (like environment and release version).
+4. You can view and analyze errors in your Sentry dashboard.
 
-### `NewStdErr() *ZLogger`
-Creates a new logger that writes logs to `stderr`.
+### **Example Configuration**
+```go
+logger := zlogger.NewWithSentry("app.log", 10, 5, true, "your_sentry_dsn", "1.0.0", "production")
+logger.Error("Database connection failed")
+```
 
-### `NewWithSentry(filename string, maxSize int, maxBackups int, dsn string, release string, environment string) *ZLogger`
-Creates a logger with Sentry integration.
+### **Sentry Best Practices**
+- Ensure your **DSN is correctly configured** in environment variables.
+- Use meaningful **release versions** to track issues across deployments.
+- Call `sentry.Flush(time.Second * 2)` before exiting the application to ensure logs are sent.
 
-- `dsn`: Sentry DSN for error tracking.
-- `release`: Application release version.
-- `environment`: Deployment environment (`production`, `staging`, etc.).
+---
 
-### Logging Methods
+## 🎨 Log Level Customization
+ZLogger supports custom log level names and colors:
+- `INFO`: Blue
+- `WARN`: Yellow
+- `ERROR`: Red
+- `FATAL`: Red background with white text
+- `DEBUG`: High-intensity blue
 
-| Method     | Description  |
-|------------|-------------|
-| `Debug(v ...interface{})` | Logs a debug message |
-| `Info(v ...interface{})` | Logs an info message |
-| `Warn(v ...interface{})` | Logs a warning |
-| `Error(v ...interface{})` | Logs an error |
-| `Fatal(v ...interface{})` | Logs a fatal error and exits |
-| `Panic(v ...interface{})` | Logs a panic message and panics |
-| `Trace(v ...interface{})` | Logs a trace message |
-| `Debugf(format string, v ...interface{})` | Logs a formatted debug message |
-| `Infof(format string, v ...interface{})` | Logs a formatted info message |
-| `Warnf(format string, v ...interface{})` | Logs a formatted warning message |
-| `Errorf(format string, v ...interface{})` | Logs a formatted error message |
-| `Fatalf(format string, v ...interface{})` | Logs a formatted fatal error and exits |
-| `Panicf(format string, v ...interface{})` | Logs a formatted panic message and panics |
+To disable colors, pass `false` in the `New()` function:
+```go
+logger := zlogger.New("app.log", 10, 5, false) // Colors disabled
+```
 
+---
 
-## Contributing
+## 🛠 Available Methods
+ZLogger provides the following logging methods:
 
-Contributions are welcome! Feel free to open issues or submit pull requests.
+### **Standard Logging Methods**
+```go
+logger.Debug("Debug message")
+logger.Info("Informational message")
+logger.Warn("Warning message")
+logger.Error("Error message")
+```
 
-## License
+### **Formatted Logging Methods**
+```go
+logger.Debugf("Debugging: %s", "details")
+logger.Infof("User %s logged in", "John")
+logger.Warnf("Warning: %d attempts detected", 3)
+logger.Errorf("Error: %v", err)
+```
 
+### **Context-aware Logging Methods**
+```go
+logger.DebugCtx(ctx, "Debug message with context")
+logger.InfoCtx(ctx, "Info message with context")
+logger.WarnCtx(ctx, "Warning message with context")
+logger.ErrorCtx(ctx, "Error message with context")
+```
+
+---
+
+## 🛠 Configuration Options
+| Parameter    | Type    | Description |
+|-------------|--------|-------------|
+| `filename`  | string | Log file path (empty to use stderr) |
+| `maxSize`   | int    | Max log file size in MB before rotation |
+| `maxBackups`| int    | Number of rotated logs to retain (0 = unlimited) |
+| `enableColors` | bool | Enable/disable color output |
+
+---
+
+## 🔥 Why Use ZLogger?
+- **Performance:** Efficient structured logging with low memory overhead.
+- **Flexibility:** Works with stdout, file-based logging, and remote monitoring (Sentry).
+- **Simplicity:** Easy-to-use API with sane defaults.
+- **Scalability:** Suitable for microservices, monoliths, and cloud-based applications.
+
+---
+
+## 🛡 License
 This project is licensed under the MIT License.
+
+---
+
+## 👨‍💻 Contributing
+We welcome contributions! Feel free to submit issues and pull requests to improve ZLogger.
+
+---
 
 ## Author
 
@@ -107,3 +160,6 @@ Developed by [Pablo Lagos](https://github.com/pablolagos).
 
 ⭐ If you like this project, don't forget to star it on GitHub!
 
+---
+
+**Happy Logging! 🚀**

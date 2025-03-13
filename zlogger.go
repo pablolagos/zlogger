@@ -14,8 +14,6 @@ import (
 	"gopkg.in/natefinch/lumberjack.v2"
 )
 
-const emptyString = ""
-
 type ZLogger struct {
 	zerolog.Logger
 	levelTrace   string
@@ -28,7 +26,7 @@ type ZLogger struct {
 }
 
 // newLogger creates a zerolog instance with optional file rotation
-func newLogger(filename string, maxSize, maxBackups int, enableColors bool) (zerolog.Logger, io.Writer) {
+func newLogger(filename string, maxSize, maxBackups int) (zerolog.Logger, io.Writer) {
 	var outFile io.Writer
 
 	if filename != "" {
@@ -52,7 +50,7 @@ func newLogger(filename string, maxSize, maxBackups int, enableColors bool) (zer
 
 // New creates a zerolog instance with optional file rotation
 func New(filename string, maxSize, maxBackups int, enableColors bool) *ZLogger {
-	logger, _ := newLogger(filename, maxSize, maxBackups, enableColors)
+	logger, _ := newLogger(filename, maxSize, maxBackups)
 	z := &ZLogger{Logger: logger}
 	z.setLevelNames(enableColors)
 	return z
@@ -65,7 +63,7 @@ func NewStdErr() *ZLogger {
 
 // NewWithSentry creates a zerolog instance with Sentry integration
 func NewWithSentry(filename string, maxSize, maxBackups int, enableColors bool, dsn, release, environment string) *ZLogger {
-	logger, outFile := newLogger(filename, maxSize, maxBackups, enableColors)
+	logger, outFile := newLogger(filename, maxSize, maxBackups)
 	z := &ZLogger{Logger: logger}
 	z.setLevelNames(enableColors)
 

@@ -219,3 +219,19 @@ func (z *ZLogger) Errorf(format string, v ...interface{}) {
 func (z *ZLogger) Warnf(format string, v ...interface{}) {
 	z.Logger.Warn().Msgf(format, v...)
 }
+
+func (z *ZLogger) Fatal(v ...interface{}) {
+	z.Logger.Fatal().Msg(fmt.Sprint(v...))
+}
+
+func (z *ZLogger) Fatalf(format string, v ...interface{}) {
+	z.Logger.Fatal().Msgf(format, v...)
+}
+
+func (z *ZLogger) Panic(v ...interface{}) {
+	z.Logger.Panic().Msg(fmt.Sprint(v...))
+}
+
+func (z *ZLogger) Panicf(format string, v ...interface{}) {
+	z.Logger.Panic().Msgf(format, v...)
+}

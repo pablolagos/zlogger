@@ -32,16 +32,17 @@ type ZLogger struct {
 
 // New creates a console zerolog with auto rotating feature
 //
-//	Filename: Filename to write log. If empty, stderr will be used.
-//	MaxSize: Max size before rotating, in MB
-//	MaxBackups: Number of backups to retain. 0=unlimited
+//		Filename: Filename to write log. If empty, stderr will be used.
+//		MaxSize: Max size before rotating, in MB
+//		MaxBackups: Number of backups to retain. 0=unlimited
+//	 color: If true, colors will be used in the output
 //
 //nolint:cyclop // This function is not too complex
-func New(filename string, maxSize int, maxBackups int) *ZLogger {
+func New(filename string, maxSize int, maxBackups int, color bool) *ZLogger {
 	var logger zerolog.Logger
 	var outFile io.Writer
 	z := ZLogger{}
-	z.setLevelNames(true)
+	z.setLevelNames(color)
 
 	if len(filename) > 0 {
 		outFile = &lumberjack.Logger{
@@ -87,7 +88,7 @@ func New(filename string, maxSize int, maxBackups int) *ZLogger {
 
 // NewStdErr creates a zerolog with stderr output, for testing purposes
 func NewStdErr() *ZLogger {
-	return New("", 0, 0)
+	return New("", 0, 0, true)
 }
 
 // NewWithSentry creates a zerolog with auto rotating feature and Sentry integration
@@ -95,11 +96,11 @@ func NewStdErr() *ZLogger {
 //	Filename: Filename to write log. If empty, stderr will be used.
 //	MaxSize: Max size before rotating, in MB
 //	MaxBackups: Number of backups to retain. 0=unlimited
-func NewWithSentry(filename string, maxSize int, maxBackups int, dsn, release, environment string) *ZLogger {
+func NewWithSentry(filename string, maxSize int, maxBackups int, dsn, release, environment string, color bool) *ZLogger {
 	var logger zerolog.Logger
 	var outFile io.Writer
 	z := ZLogger{}
-	z.setLevelNames(true)
+	z.setLevelNames(color)
 
 	if len(filename) > 0 {
 		outFile = &lumberjack.Logger{

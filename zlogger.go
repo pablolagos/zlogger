@@ -30,6 +30,12 @@ type ZLogger struct {
 	levelPanic   string
 }
 
+// check zlogger implements the SimpleLogger interface
+var _ SimpleLogger = (*ZLogger)(nil)
+
+// check zlogger implements the MultiLevelLogger interface
+var _ MultiLevelLogger = (*ZLogger)(nil)
+
 // New creates a console zerolog with auto rotating feature
 //
 //		Filename: Filename to write log. If empty, stderr will be used.

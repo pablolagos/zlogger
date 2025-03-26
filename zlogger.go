@@ -20,6 +20,7 @@ const emptyString = ""
 
 type ZLogger struct {
 	zerolog.Logger
+	lj *lumberjack.Logger
 
 	levelTrace   string
 	levelInfo    string
@@ -51,12 +52,13 @@ func New(filename string, maxSize int, maxBackups int, color bool) *ZLogger {
 	z.setLevelNames(color)
 
 	if len(filename) > 0 {
-		outFile = &lumberjack.Logger{
+		z.lj = &lumberjack.Logger{
 			Filename:   path.Join(filename),
 			MaxSize:    maxSize,
 			MaxBackups: maxBackups,
 			Compress:   true, // disabled by default
 		}
+		outFile = z.lj
 	} else {
 		outFile = os.Stderr
 	}
@@ -189,6 +191,16 @@ func (z *ZLogger) setLevelNames(applyColors bool) {
 	z.levelFatal = color.New(color.BgRed).Add(color.FgWhite).Sprint("[FATAL]")
 	z.levelDebug = color.HiBlueString("[DEBUG]")
 	z.levelPanic = color.New(color.BgHiRed).Add(color.BgBlack).Sprint("[PANIC]")
+}
+
+// Rotate attempts to rotate the underlying log file if a lumberjack logger is configured. Returns an error on failure.
+// The rotation is automatically triggered when the log file reaches the specified size limit, but this method can be called manually if needed.
+func (z *ZLogger) Rotate() error {
+	if z.lj != nil {
+		return z.lj.Rotate()
+	}
+
+	return nil
 }
 
 func (z *ZLogger) GetLogger() zerolog.Logger {

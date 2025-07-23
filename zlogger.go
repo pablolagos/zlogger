@@ -11,8 +11,8 @@ import (
 
 	"github.com/fatih/color"
 	"github.com/getsentry/sentry-go"
+	"github.com/pablolagos/zlogger/zlogsentry"
 	"github.com/rs/zerolog"
-	zlogsentry "github.com/sveatlo/zerolog-sentry"
 	"gopkg.in/natefinch/lumberjack.v2"
 )
 

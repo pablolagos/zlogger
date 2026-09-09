@@ -65,7 +65,7 @@ func New(filename string, maxSize int, maxBackups int, color bool) *ZLogger {
 
 	logger = zerolog.New(zerolog.ConsoleWriter{
 		Out:        outFile,
-		TimeFormat: "2006/02/01 15:04:05",
+		TimeFormat: "2006/01/02 15:04:05",
 		FormatLevel: func(i interface{}) string {
 			switch i {
 			case zerolog.LevelErrorValue:
@@ -123,7 +123,7 @@ func NewWithSentry(filename string, maxSize int, maxBackups int, dsn, release, e
 
 	writer1 := zerolog.ConsoleWriter{
 		Out:        outFile,
-		TimeFormat: "2006/02/01 15:04:05",
+		TimeFormat: "2006/01/02 15:04:05",
 		FormatLevel: func(i interface{}) string {
 			switch i {
 			case zerolog.LevelErrorValue:
